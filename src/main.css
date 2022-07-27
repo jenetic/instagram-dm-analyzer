@@ -1,0 +1,13 @@
+#results {
+  display: grid;
+  grid-template-columns: 30% auto;
+  grid-template-areas: "dm-list main";
+}
+
+#dm-list {
+  grid-area: dm-list;
+}
+
+#main {
+  grid-area: main;
+}

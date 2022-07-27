@@ -15,7 +15,7 @@ document.getElementById('submit-button').addEventListener("click", function(even
   const files: File[] = processFileInput((<HTMLInputElement>document.getElementById("file-input")).files);
 
   files.forEach(file => {
-    const filesList = document.getElementById("files")
+    const filesList = document.getElementById("dm-list")
     const divElement = document.createElement("div");
     
     const reader = new FileReader();
@@ -24,16 +24,13 @@ document.getElementById('submit-button').addEventListener("click", function(even
       const contentString: string = evt.target.result as string;
       const content = JSON.parse(contentString);
 
-      const p = document.createElement("p");
-      p.textContent = content.participants[0].name;
-      
+      // const p = document.createElement("p");
+      const main = document.getElementById("main");
       const button = document.createElement("button");
-      button.textContent = content.participants[0].name;
+      button.textContent = content.title;
       button.onclick = () => {
-        console.log(content.participants[0].name);
+        main.textContent = JSON.stringify(content);
       }
-
-      divElement.appendChild(p);
       divElement.appendChild(button);
       filesList.appendChild(divElement);
     }
@@ -43,5 +40,7 @@ document.getElementById('submit-button').addEventListener("click", function(even
       document.getElementById("file-contents").innerHTML = "error reading file";
     }
   })
+
+  document.getElementById("no-files-message").style.display = "none";
 }, false);
 
