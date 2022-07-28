@@ -1,3 +1,4 @@
+import { getSummary } from './statistics';
 import './main.css';
 
 let files: File[] = [];
@@ -10,10 +11,6 @@ const processFileInput = (fileList: FileList): File[] => {
     return file.name.substring(file.name.length - 4) === "json";
   })
   return files;
-}
-
-const getFirstParticipant = (content: any) => {
-  return content.participants[0].name;
 }
 
 // Main
@@ -38,11 +35,18 @@ document.getElementById('submit-button').addEventListener("click", function(even
       sideButton.onclick = () => {
 
         // Sub buttons
+        const summaryBtn = document.createElement("button");
+        summaryBtn.textContent = "Summary";
+        summaryBtn.onclick = () => {
+          mainContent.innerHTML = "";
+          mainContent.textContent = getSummary(content);
+        }
+
         const firstPartipicantBtn = document.createElement("button");
         firstPartipicantBtn.textContent = "First Participant";
         firstPartipicantBtn.onclick = () => {
           mainContent.innerHTML = "";
-          mainContent.textContent = getFirstParticipant(content);
+          // mainContent.textContent = getFirstParticipant(content);
         };
 
         const contentBtn = document.createElement("button");
@@ -54,8 +58,13 @@ document.getElementById('submit-button').addEventListener("click", function(even
 
         buttonHeader.innerHTML = "";
         mainContent.innerHTML = "";
+
+        buttonHeader.appendChild(summaryBtn);
         buttonHeader.appendChild(firstPartipicantBtn);
         buttonHeader.appendChild(contentBtn); 
+
+        // Display summary automatically
+        mainContent.textContent = getSummary(content);
       }
       filesList.appendChild(sideButton);
     }
