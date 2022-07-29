@@ -1,8 +1,7 @@
-import { getSummary } from './statistics';
+import { getSummary, makeSummaryTable } from './statistics';
 import './main.css';
 
 let files: File[] = [];
-// let dropDownSelection: string = "";
 
 // Turns file inputs into array and removes non-JSON files
 const processFileInput = (fileList: FileList): File[] => {
@@ -39,7 +38,7 @@ document.getElementById('submit-button').addEventListener("click", function(even
         summaryBtn.textContent = "Summary";
         summaryBtn.onclick = () => {
           mainContent.innerHTML = "";
-          mainContent.textContent = getSummary(content);
+          mainContent.appendChild(makeSummaryTable(getSummary(content)));
         }
 
         const firstPartipicantBtn = document.createElement("button");
@@ -63,8 +62,10 @@ document.getElementById('submit-button').addEventListener("click", function(even
         buttonHeader.appendChild(firstPartipicantBtn);
         buttonHeader.appendChild(contentBtn); 
 
+        document.getElementById("chat-name").textContent = content.title;
+
         // Display summary automatically
-        mainContent.textContent = getSummary(content);
+        mainContent.appendChild(makeSummaryTable(getSummary(content)))
       }
       filesList.appendChild(sideButton);
     }
