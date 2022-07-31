@@ -1,8 +1,6 @@
 import { getSummary, makeSummaryTable } from './statistics';
 import './main.css';
 
-let files: File[] = [];
-
 // Turns file inputs into array and removes non-JSON files
 const processFileInput = (fileList: FileList): File[] => {
   let files: File[] = Array.from(fileList);
@@ -12,10 +10,32 @@ const processFileInput = (fileList: FileList): File[] => {
   return files;
 }
 
+const groupFiles = (files: File[]) => {
+  const fileGroups: any = {};
+  
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.readAsText(file, "UTF-8");
+    reader.onload = (evt) => {
+      const contentString: string = evt.target.result as string;
+      const content = JSON.parse(contentString);
+      if (content["thread_path"] in fileGroups) {
+        fileGroups[content["thread_path"]].push(content);
+      } else {
+        fileGroups[content["thread_path"]] = [content];
+      }
+    }
+  })
+  return fileGroups;
+}
+
 // Main
 document.getElementById('submit-button').addEventListener("click", function(event) {
   event.preventDefault();
-  files = processFileInput((<HTMLInputElement>document.getElementById("file-input")).files);
+  const files: File[] = processFileInput((<HTMLInputElement>document.getElementById("file-input")).files);
+  
+  // const fileGroups = groupFiles(files);
+  // console.log(fileGroups);
 
   files.forEach(file => {
     const filesList = document.getElementById("dm-list");
@@ -52,7 +72,7 @@ document.getElementById('submit-button').addEventListener("click", function(even
         contentBtn.textContent = "Content";
         contentBtn.onclick = () => {
           mainContent.innerHTML = "";
-          mainContent.textContent = JSON.stringify(content);
+          mainContent.textContent = "";
         };
 
         buttonHeader.innerHTML = "";
