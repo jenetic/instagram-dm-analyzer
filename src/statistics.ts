@@ -11,9 +11,10 @@ export const getSummary = (content: any) => {
       const sender = participants[message["sender_name"]];
       if (!("content" in message) || ("content" in message && message["content"] !== "Liked a message")) {sender["Messages"]++};
       if ("content" in message && message["content"] !== "Liked a message") {
+        sender["Texts"] += 1,
         sender["Words"] += message["content"].split(" ").length;
       } 
-      if (message["type"] === "Share") {sender["Shared"]++;}
+      if (message["type"] === "Share" && !("content" in message)) {sender["Shared"]++;}
       if ("photos" in message) {sender["Photos"] += message["photos"].length;}
       if ("videos" in message) {sender["Photos"] += message["videos"].length;}
       if (message["is_unsent"]) {sender["Unsent"]++;}
@@ -30,11 +31,13 @@ export const getSummary = (content: any) => {
         sender["Messages"] = 1
       );
       ("content" in message && message["content"] !== "Liked a message") ? (
+        sender["Texts"] = 1,
         sender["Words"] = message["content"].split(" ").length
       ) : (
+        sender["Texts"] = 0,
         sender["Words"] = 0
       );
-      (message["type"] === "Share") ? (
+      (message["type"] === "Share" && !("content" in message)) ? (
         sender["Shared"] = 1
       ) : (
         sender["Shared"] = 0
@@ -64,24 +67,28 @@ export const getSummary = (content: any) => {
       participants[participant["name"]] = {
         "Name": participant["name"],
         "Messages": 0,
+        "Texts": 0,
         "Words": 0,
         "Shared": 0,
         "Photos": 0,
         "Videos": 0,
-        "Unsent": 0
+        "Unsent": 0,
       };
     }
   })
 
-  // Average words per message
+  // Average words per message & Other
   for (const name in participants) {
-    if (participants[name]["Messages"] === 0) {
-      participants[name]["Average Words Per Message"] = 0;
+    const person = participants[name];
+    // Other
+    person["Other"] = person["Messages"] - person["Texts"] - person["Shared"] - person["Photos"] - person["Videos"];
+    // Average words per text
+    if (person["Messages"] === 0) {
+      person["Average Words Per Message"] = 0;
     } else {
-      participants[name]["Average Words Per Message"] = Math.round((participants[name]["Words"] / participants[name]["Messages"])*100)/100; 
+      person["Average Words Per Message"] = Math.round((person["Words"] / person["Texts"])*100)/100; 
     }
   }
-
   // Turn into list to make table
   const participantList = [];
   for (const name in participants) {
