@@ -1,6 +1,8 @@
 import { getSummary, makeSummaryTable } from './statistics';
 import './main.css';
 
+const fileGroups: any = {};
+
 // Turns file inputs into array and removes non-JSON files
 const processFileInput = (fileList: FileList): File[] => {
   let files: File[] = Array.from(fileList);
@@ -10,29 +12,36 @@ const processFileInput = (fileList: FileList): File[] => {
   return files;
 }
 
-const readFile = (file: File) => {
-  return new Promise((resolve) => {
+const groupFiles = async (files: File[], callback: any) => {
+  let count = files.length;
+  // const fileGroups: any = {};
+
+  const addToDict = (file: File) => {
     const reader = new FileReader();
-    reader.onload = () => {
-      resolve(reader.result);
-      reader.readAsText(file, "UTF-8");
-    }
-  })  
+    reader.onload = (evt) => {
+      const contentString: any = evt.target.result;
+      const content = JSON.parse(contentString);
+      if (content["thread_path"] in fileGroups) {
+        fileGroups[content["thread_path"]].push(content);
+      } else {
+        fileGroups[content["thread_path"]] = [content];
+      }
+      count--;
+      if (count === 0) {
+        // return fileGroups;
+        callback(fileGroups)
+      }
+    };
+    reader.readAsText(file, "UTF-8");
+  }
+  
+  for (let i = 0; i < count; i++) {
+    addToDict(files[i]);
+  }
 }
 
-const addToDict = async (dict: any, file: File) => {
-  const content: any = await readFile(file);
-  dict[content.title] = content;
-}
-
-const groupFiles = async (files: File[]) => {
-  const fileGroups: any = {};
-  
-  files.forEach(file => {
-    addToDict(fileGroups, file);
-  })
-  
-  return fileGroups;
+const testy = (fileGroups: any) => {
+  console.log(fileGroups);
 }
 
 // Main
@@ -40,8 +49,7 @@ document.getElementById('submit-button').addEventListener("click", function(even
   event.preventDefault();
   const files: File[] = processFileInput((<HTMLInputElement>document.getElementById("file-input")).files);
   
-  const fileGroups = groupFiles(files);
-  console.log(fileGroups);
+  groupFiles(files, testy);
 
   files.forEach(file => {
     const filesList = document.getElementById("dm-list");
