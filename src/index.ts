@@ -10,22 +10,28 @@ const processFileInput = (fileList: FileList): File[] => {
   return files;
 }
 
-const groupFiles = (files: File[]) => {
+const readFile = (file: File) => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result);
+      reader.readAsText(file, "UTF-8");
+    }
+  })  
+}
+
+const addToDict = async (dict: any, file: File) => {
+  const content: any = await readFile(file);
+  dict[content.title] = content;
+}
+
+const groupFiles = async (files: File[]) => {
   const fileGroups: any = {};
   
   files.forEach(file => {
-    const reader = new FileReader();
-    reader.readAsText(file, "UTF-8");
-    reader.onload = (evt) => {
-      const contentString: string = evt.target.result as string;
-      const content = JSON.parse(contentString);
-      if (content["thread_path"] in fileGroups) {
-        fileGroups[content["thread_path"]].push(content);
-      } else {
-        fileGroups[content["thread_path"]] = [content];
-      }
-    }
+    addToDict(fileGroups, file);
   })
+  
   return fileGroups;
 }
 
@@ -34,8 +40,8 @@ document.getElementById('submit-button').addEventListener("click", function(even
   event.preventDefault();
   const files: File[] = processFileInput((<HTMLInputElement>document.getElementById("file-input")).files);
   
-  // const fileGroups = groupFiles(files);
-  // console.log(fileGroups);
+  const fileGroups = groupFiles(files);
+  console.log(fileGroups);
 
   files.forEach(file => {
     const filesList = document.getElementById("dm-list");
