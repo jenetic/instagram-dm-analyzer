@@ -83,10 +83,10 @@ export const getSummary = (content: any) => {
     // Other
     person["Other"] = person["Messages"] - person["Texts"] - person["Shared"] - person["Photos"] - person["Videos"];
     // Average words per text
-    if (person["Messages"] === 0) {
-      person["Average Words Per Message"] = 0;
+    if (person["Texts"] === 0) {
+      person["Average Words Per Text"] = 0;
     } else {
-      person["Average Words Per Message"] = Math.round((person["Words"] / person["Texts"])*100)/100; 
+      person["Average Words Per Text"] = Math.round((person["Words"] / person["Texts"])*100)/100; 
     }
   }
   // Turn into list to make table
