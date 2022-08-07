@@ -1,4 +1,4 @@
-import { getSummary, makeSummaryTable } from './statistics';
+import { getSummary, makeSummaryTable, getSummaryPercentages } from './statistics';
 import './main.css';
 
 // Turns file inputs into array and removes non-JSON files
@@ -22,6 +22,7 @@ const groupFiles = async (files: File[], callback: any) => {
       if (content["thread_path"] in fileGroups) {
         fileGroups[content["thread_path"]].push(content);
       } else {
+
         fileGroups[content["thread_path"]] = [content];
       }
       count--;
@@ -53,14 +54,14 @@ const displayResults = (fileGroups: any) => {
       summaryBtn.textContent = "Summary";
       summaryBtn.onclick = () => {
         mainContent.innerHTML = "";
-        mainContent.appendChild(makeSummaryTable(getSummary(fileGroups[thread][0])));
+        mainContent.appendChild(makeSummaryTable(getSummary(fileGroups[thread])));
       }
 
-      const firstPartipicantBtn = document.createElement("button");
-      firstPartipicantBtn.textContent = "First Participant";
-      firstPartipicantBtn.onclick = () => {
+      const percentageBtn = document.createElement("button");
+      percentageBtn.textContent = "Percentage";
+      percentageBtn.onclick = () => {
         mainContent.innerHTML = "";
-        // mainContent.textContent = getFirstParticipant(content);
+        mainContent.appendChild(makeSummaryTable(getSummaryPercentages(), true));
       };
 
       const contentBtn = document.createElement("button");
@@ -74,13 +75,13 @@ const displayResults = (fileGroups: any) => {
       mainContent.innerHTML = "";
 
       buttonHeader.appendChild(summaryBtn);
-      buttonHeader.appendChild(firstPartipicantBtn);
+      buttonHeader.appendChild(percentageBtn);
       buttonHeader.appendChild(contentBtn); 
 
       document.getElementById("chat-name").textContent = fileGroups[thread][0].title;
 
       // Display summary automatically
-      mainContent.appendChild(makeSummaryTable(getSummary(fileGroups[thread][0])))
+      mainContent.appendChild(makeSummaryTable(getSummary(fileGroups[thread])))
     }
     dmList.appendChild(sideButton);
   }

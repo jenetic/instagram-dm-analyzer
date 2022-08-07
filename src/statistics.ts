@@ -1,82 +1,88 @@
+let participantList: any = [];
+
 /**
  * Get summary statistics
+ * @returns participantList
  */
-export const getSummary = (content: any) => {
+export const getSummary = (thread: any) => {
   const participants: any = {};
-  const messages = content.messages;
+  
+  thread.forEach((content: any) => {
+    const messages = content.messages;
 
-  messages.forEach((message: any) => {
-    // Basic statistics
-    if (message["sender_name"] in participants) {
-      const sender = participants[message["sender_name"]];
-      if (!("content" in message) || ("content" in message && message["content"] !== "Liked a message")) {sender["Messages"]++};
-      if ("content" in message && message["content"] !== "Liked a message") {
-        sender["Texts"] += 1,
-        sender["Words"] += message["content"].split(" ").length;
-      } 
-      if (message["type"] === "Share" && !("content" in message)) {sender["Shared"]++;}
-      if ("photos" in message) {sender["Photos"] += message["photos"].length;}
-      if ("videos" in message) {sender["Photos"] += message["videos"].length;}
-      if (message["is_unsent"]) {sender["Unsent"]++;}
+    messages.forEach((message: any) => {
+      // Basic statistics
+      if (message["sender_name"] in participants) {
+        const sender = participants[message["sender_name"]];
+        if (!("content" in message) || ("content" in message && message["content"] !== "Liked a message")) {sender["Messages"]++};
+        if ("content" in message && message["content"] !== "Liked a message") {
+          sender["Texts"] += 1,
+          sender["Words"] += message["content"].split(" ").length;
+        } 
+        if (message["type"] === "Share" && !("content" in message)) {sender["Shared"]++;}
+        if ("photos" in message) {sender["Photos"] += message["photos"].length;}
+        if ("videos" in message) {sender["Photos"] += message["videos"].length;}
+        if (message["is_unsent"]) {sender["Unsent"]++;}
+  
+      } else {
+        participants[message["sender_name"]] = {};
+        const sender = participants[message["sender_name"]];
+  
+        sender["Name"] = message["sender_name"];
+        
+        ("content" in message && message["content"] == "Liked a message") ? (
+          sender["Messages"] = 0
+        ) : (
+          sender["Messages"] = 1
+        );
+        ("content" in message && message["content"] !== "Liked a message") ? (
+          sender["Texts"] = 1,
+          sender["Words"] = message["content"].split(" ").length
+        ) : (
+          sender["Texts"] = 0,
+          sender["Words"] = 0
+        );
+        (message["type"] === "Share" && !("content" in message)) ? (
+          sender["Shared"] = 1
+        ) : (
+          sender["Shared"] = 0
+        )
+        "photos" in message ? (
+          sender["Photos"] = message["photos"].length
+        ) : (
+          sender["Photos"] = 0
+        );
+        "videos" in message ? (
+          sender["Videos"] = message["videos"].length
+        ) : (
+          sender["Videos"] = 0
+        );
+        message["is_unsent"] ? (
+          sender["Unsent"] = 1
+        ) : (
+          sender["Unsent"] = 0
+        );
+      }
+    })
 
-    } else {
-      participants[message["sender_name"]] = {};
-      const sender = participants[message["sender_name"]];
-
-      sender["Name"] = message["sender_name"];
-      
-      ("content" in message && message["content"] == "Liked a message") ? (
-        sender["Messages"] = 0
-      ) : (
-        sender["Messages"] = 1
-      );
-      ("content" in message && message["content"] !== "Liked a message") ? (
-        sender["Texts"] = 1,
-        sender["Words"] = message["content"].split(" ").length
-      ) : (
-        sender["Texts"] = 0,
-        sender["Words"] = 0
-      );
-      (message["type"] === "Share" && !("content" in message)) ? (
-        sender["Shared"] = 1
-      ) : (
-        sender["Shared"] = 0
-      )
-      "photos" in message ? (
-        sender["Photos"] = message["photos"].length
-      ) : (
-        sender["Photos"] = 0
-      );
-      "videos" in message ? (
-        sender["Videos"] = message["videos"].length
-      ) : (
-        sender["Videos"] = 0
-      );
-      message["is_unsent"] ? (
-        sender["Unsent"] = 1
-      ) : (
-        sender["Unsent"] = 0
-      );
-    }
+    // Check for people who never sent a message
+    thread[0]["participants"].forEach((participant: any) => {
+      if (participant["name"] in participants) {
+      } else {
+        participants[participant["name"]] = {
+          "Name": participant["name"],
+          "Messages": 0,
+          "Texts": 0,
+          "Words": 0,
+          "Shared": 0,
+          "Photos": 0,
+          "Videos": 0,
+          "Unsent": 0,
+        };
+      }
+    })
   })
-
-  // Check for people who never sent a message
-  content["participants"].forEach((participant: any) => {
-    if (participant["name"] in participants) {
-    } else {
-      participants[participant["name"]] = {
-        "Name": participant["name"],
-        "Messages": 0,
-        "Texts": 0,
-        "Words": 0,
-        "Shared": 0,
-        "Photos": 0,
-        "Videos": 0,
-        "Unsent": 0,
-      };
-    }
-  })
-
+  
   // Average words per message & Other
   for (const name in participants) {
     const person = participants[name];
@@ -90,7 +96,7 @@ export const getSummary = (content: any) => {
     }
   }
   // Turn into list to make table
-  const participantList = [];
+  participantList = [];
   for (const name in participants) {
     participantList.push(participants[name]);
   }
@@ -125,25 +131,27 @@ export const sortTable = (key: string) => {
   rowArrayToTable(rows, table);
 }
 
-export const makeSummaryTable = (participantList: any[]) => {
+export const makeSummaryTable = (participantList: any[], percent=false) => {
   const table = document.createElement("table");
   table.id = "summary-table";
   const tr = document.createElement("tr");
   tr.id = "table-header";
-  let count = 0;
   for (const key in participantList[0]) {
     const th = document.createElement("th");
     th.textContent = key;
     th.onclick = () => {sortTable(key);}
     tr.appendChild(th);
-    count++;
   }
   table.appendChild(tr);
   participantList.forEach((participantObj) => {
     const tr = document.createElement("tr");
     for (const key in participantObj) {
       const td = document.createElement("td");
-      td.textContent = participantObj[key];
+      percent && key !== "Name" ? (
+        td.textContent = participantObj[key] + "%"
+      ) : (
+        td.textContent = participantObj[key]
+      )
       td.className = key;
       tr.appendChild(td);
     }
@@ -151,3 +159,35 @@ export const makeSummaryTable = (participantList: any[]) => {
   })
   return table;
 } 
+
+/**
+ * Gets percentages of current chat
+ * @returns participantList
+ */
+export const getSummaryPercentages = () => {
+  const total: any = {};
+
+  // Get total count of all properties
+  participantList.forEach((participant: any) => {
+    for (const key in participant) {
+      if (key !== "Name") {
+        key in total ? (
+          total[key] += participant[key]
+        ) : (
+          total[key] = participant[key]
+        );
+      }
+    }
+  })
+  // Divide everyone's stats by corresponding total to get percentage
+  participantList.forEach((person: any) => {
+    for (const key in person) {
+      if (key !== "Name") {
+        if (total[key] !== 0) {
+          person[key] = Math.round((person[key] / total[key])*100 *1)/1;
+        }
+      }
+    }
+  })
+  return participantList;
+}
