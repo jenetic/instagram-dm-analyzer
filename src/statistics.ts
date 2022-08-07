@@ -191,3 +191,53 @@ export const getSummaryPercentages = () => {
   })
   return participantList;
 }
+
+/**
+ * Get latest messages from chat room given thread
+ * @params 
+ */
+export const getLatestMessages = (thread: any) => {
+  let latestThread = thread[0];
+  // Figure out which chat in thread has the latest messages
+  thread.forEach((content: any) => {
+    const timestamp = content.messages[0].timestamp_ms;
+    if (timestamp > latestThread.messages[0].timestamp_ms) {
+      latestThread = content;
+    }
+  })
+  return latestThread.messages.slice(0, 10);
+}
+
+const timestampToDate = (timestamp: number) => {
+  const date = new Date(timestamp);
+  const month = date.getMonth() + 1;
+  return month + "/" + date.getDate() + "/" + date.getFullYear();
+}
+
+export const displayMessages = (messages: any[]) => {
+  const messagesElement  = document.createElement('div');
+  messages.forEach((message: any) => {
+    const headerElement = document.createElement('p');
+    headerElement.className = "message-header";
+    const textElement = document.createElement('p');
+    textElement.className = "message-text";
+
+    headerElement.textContent = message.sender_name + " at " + timestampToDate(message.timestamp_ms);
+    if ("content" in message) { textElement.textContent = message.content }
+    else {
+      textElement.className = "message-media"
+      if ("photos" in message) { textElement.textContent = "sent a photo." }
+      else if ("videos" in message) { textElement.textContent = "sent a video." }
+      else if (message["type"] === "Share" && !("content" in message)) { textElement.textContent = "shared something" }
+      else { textElement.textContent = "sent some non-text media." }
+    }
+   
+    const messageElement = document.createElement("div");
+    messageElement.className = "message-wrapper"
+
+    messageElement.appendChild(headerElement);
+    messageElement.appendChild(textElement);
+    messagesElement.appendChild(messageElement);
+  })
+  return messagesElement;
+}

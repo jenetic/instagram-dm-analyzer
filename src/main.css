@@ -1,3 +1,8 @@
+p {
+  margin: 0;
+  padding: 0;
+}
+
 #results {
   display: grid;
   grid-template-columns: 30% auto;
@@ -10,4 +15,17 @@
 
 #main {
   grid-area: main;
+}
+
+/* Displaying messages */
+.message-wrapper {
+  margin: 1rem auto;
+}
+
+.message-header {
+  color: red;
+}
+
+.message-media {
+  color: red;
 }

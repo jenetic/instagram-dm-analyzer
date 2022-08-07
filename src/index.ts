@@ -1,4 +1,10 @@
-import { getSummary, makeSummaryTable, getSummaryPercentages } from './statistics';
+import { 
+  getSummary,
+  makeSummaryTable, 
+  getSummaryPercentages, 
+  getLatestMessages,
+  displayMessages
+} from './statistics';
 import './main.css';
 
 // Turns file inputs into array and removes non-JSON files
@@ -65,10 +71,10 @@ const displayResults = (fileGroups: any) => {
       };
 
       const contentBtn = document.createElement("button");
-      contentBtn.textContent = "Content";
+      contentBtn.textContent = "Latest Messages";
       contentBtn.onclick = () => {
         mainContent.innerHTML = "";
-        mainContent.textContent = JSON.stringify(fileGroups[thread][0]);
+        mainContent.appendChild(displayMessages(getLatestMessages(fileGroups[thread])));
       };
 
       buttonHeader.innerHTML = "";
