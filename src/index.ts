@@ -3,7 +3,8 @@ import {
   makeSummaryTable, 
   getSummaryPercentages, 
   getLatestMessages,
-  displayMessages
+  displayMessages,
+  decodeUtf8
 } from './statistics';
 import './main.css';
 
@@ -52,7 +53,7 @@ const displayResults = (fileGroups: any) => {
 
     const sideButton = document.createElement("button");
     sideButton.setAttribute("class", "side-button");
-    sideButton.textContent = fileGroups[thread][0].title; // get value of key
+    sideButton.textContent = decodeUtf8(fileGroups[thread][0].title); // get value of key
     sideButton.onclick = () => {
       
       // Sub buttons
@@ -84,7 +85,7 @@ const displayResults = (fileGroups: any) => {
       buttonHeader.appendChild(percentageBtn);
       buttonHeader.appendChild(contentBtn); 
 
-      document.getElementById("chat-name").textContent = fileGroups[thread][0].title;
+      document.getElementById("chat-name").textContent = decodeUtf8(fileGroups[thread][0].title);
 
       // Display summary automatically
       mainContent.appendChild(makeSummaryTable(getSummary(fileGroups[thread])))

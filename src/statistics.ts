@@ -1,5 +1,9 @@
 let participantList: any = [];
 
+export const decodeUtf8 = (s: string): string => {
+  return decodeURIComponent(escape(s));
+};
+
 /**
  * Get summary statistics
  * @returns participantList
@@ -147,11 +151,13 @@ export const makeSummaryTable = (participantList: any[], percent=false) => {
     const tr = document.createElement("tr");
     for (const key in participantObj) {
       const td = document.createElement("td");
-      percent && key !== "Name" ? (
+      if (key == "Name") {
+        td.textContent = decodeUtf8(participantObj[key]);
+      } else if (percent) {
         td.textContent = participantObj[key] + "%"
-      ) : (
+      } else {
         td.textContent = participantObj[key]
-      )
+      }
       td.className = key;
       tr.appendChild(td);
     }
@@ -222,8 +228,8 @@ export const displayMessages = (messages: any[]) => {
     const textElement = document.createElement('p');
     textElement.className = "message-text";
 
-    headerElement.textContent = message.sender_name + " at " + timestampToDate(message.timestamp_ms);
-    if ("content" in message) { textElement.textContent = message.content }
+    headerElement.textContent = decodeUtf8(message.sender_name) + " at " + timestampToDate(message.timestamp_ms);
+    if ("content" in message) { textElement.textContent = decodeUtf8(message.content); }
     else {
       textElement.className = "message-media"
       if ("photos" in message) { textElement.textContent = "sent a photo." }
