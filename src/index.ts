@@ -1,14 +1,17 @@
 import { 
   getSummary,
-  makeSummaryTable, 
-  getSummaryPercentages, 
-  getLatestMessages,
-  displayMessages,
-  decodeUtf8
 } from './statistics';
 import {
+  makeSummaryTable, 
+  getSummaryPercentages,
+  displayMessages,
+  decodeUtf8
+} from './display';
+import {
   getRandomMessages,
-} from './other';
+  getLatestMessages,
+  getFirstMessages,
+} from './messages';
 import './main.css';
 
 // Turns file inputs into array and removes non-JSON files
@@ -59,12 +62,13 @@ const displayResults = (fileGroups: any) => {
     sideButton.textContent = decodeUtf8(fileGroups[thread][0].title); // get value of key
     sideButton.onclick = () => {
       
+      const chats = fileGroups[thread];
       // Sub buttons
       const summaryBtn = document.createElement("button");
       summaryBtn.textContent = "Summary";
       summaryBtn.onclick = () => {
         mainContent.innerHTML = "";
-        mainContent.appendChild(makeSummaryTable(getSummary(fileGroups[thread])));
+        mainContent.appendChild(makeSummaryTable(getSummary(chats)));
       }
 
       const percentageBtn = document.createElement("button");
@@ -74,18 +78,25 @@ const displayResults = (fileGroups: any) => {
         mainContent.appendChild(makeSummaryTable(getSummaryPercentages(), true));
       };
 
-      const contentBtn = document.createElement("button");
-      contentBtn.textContent = "Latest Messages";
-      contentBtn.onclick = () => {
+      const latestBtn = document.createElement("button");
+      latestBtn.textContent = "Latest Messages";
+      latestBtn.onclick = () => {
         mainContent.innerHTML = "";
-        mainContent.appendChild(displayMessages(getLatestMessages(fileGroups[thread])));
+        mainContent.appendChild(displayMessages(getLatestMessages(chats)));
+      };
+
+      const firstBtn = document.createElement("button");
+      firstBtn.textContent = "First Messages";
+      firstBtn.onclick = () => {
+        mainContent.innerHTML = "";
+        mainContent.appendChild(displayMessages(getFirstMessages(chats)));
       };
 
       const randomBtn = document.createElement("button");
       randomBtn.textContent = "Random Message";
       randomBtn.onclick = () => {
         mainContent.innerHTML = "";
-        mainContent.appendChild(displayMessages(getRandomMessages(fileGroups[thread])));
+        mainContent.appendChild(displayMessages(getRandomMessages(chats)));
       }
 
       buttonHeader.innerHTML = "";
@@ -93,7 +104,8 @@ const displayResults = (fileGroups: any) => {
 
       buttonHeader.appendChild(summaryBtn);
       buttonHeader.appendChild(percentageBtn);
-      buttonHeader.appendChild(contentBtn); 
+      buttonHeader.appendChild(latestBtn); 
+      buttonHeader.appendChild(firstBtn); 
       buttonHeader.appendChild(randomBtn); 
 
       document.getElementById("chat-name").textContent = decodeUtf8(fileGroups[thread][0].title);
