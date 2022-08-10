@@ -6,6 +6,9 @@ import {
   displayMessages,
   decodeUtf8
 } from './statistics';
+import {
+  getRandomMessages,
+} from './other';
 import './main.css';
 
 // Turns file inputs into array and removes non-JSON files
@@ -78,12 +81,20 @@ const displayResults = (fileGroups: any) => {
         mainContent.appendChild(displayMessages(getLatestMessages(fileGroups[thread])));
       };
 
+      const randomBtn = document.createElement("button");
+      randomBtn.textContent = "Random Message";
+      randomBtn.onclick = () => {
+        mainContent.innerHTML = "";
+        mainContent.appendChild(displayMessages(getRandomMessages(fileGroups[thread])));
+      }
+
       buttonHeader.innerHTML = "";
       mainContent.innerHTML = "";
 
       buttonHeader.appendChild(summaryBtn);
       buttonHeader.appendChild(percentageBtn);
       buttonHeader.appendChild(contentBtn); 
+      buttonHeader.appendChild(randomBtn); 
 
       document.getElementById("chat-name").textContent = decodeUtf8(fileGroups[thread][0].title);
 

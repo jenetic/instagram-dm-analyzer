@@ -221,6 +221,7 @@ const timestampToDate = (timestamp: number) => {
 }
 
 export const displayMessages = (messages: any[]) => {
+  messages.reverse();
   const messagesElement  = document.createElement('div');
   messages.forEach((message: any) => {
     const headerElement = document.createElement('p');
