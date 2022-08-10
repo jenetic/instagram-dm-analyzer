@@ -5,7 +5,8 @@ import {
   makeSummaryTable, 
   getSummaryPercentages,
   displayMessages,
-  decodeUtf8
+  decodeUtf8,
+  displayWords
 } from './display';
 import {
   getRandomMessages,
@@ -68,7 +69,7 @@ const displayResults = (fileGroups: any) => {
       summaryBtn.textContent = "Summary";
       summaryBtn.onclick = () => {
         mainContent.innerHTML = "";
-        mainContent.appendChild(makeSummaryTable(getSummary(chats)));
+        mainContent.appendChild(makeSummaryTable(getSummary(chats)[0]));
       }
 
       const percentageBtn = document.createElement("button");
@@ -99,6 +100,13 @@ const displayResults = (fileGroups: any) => {
         mainContent.appendChild(displayMessages(getRandomMessages(chats)));
       }
 
+      const wordsBtn = document.createElement("button");
+      wordsBtn.textContent = "Top Words";
+      wordsBtn.onclick = () => {
+        mainContent.innerHTML = "";
+        mainContent.appendChild(displayWords(getSummary(chats)[1]));
+      }
+
       buttonHeader.innerHTML = "";
       mainContent.innerHTML = "";
 
@@ -107,11 +115,12 @@ const displayResults = (fileGroups: any) => {
       buttonHeader.appendChild(latestBtn); 
       buttonHeader.appendChild(firstBtn); 
       buttonHeader.appendChild(randomBtn); 
+      buttonHeader.appendChild(wordsBtn); 
 
       document.getElementById("chat-name").textContent = decodeUtf8(fileGroups[thread][0].title);
 
       // Display summary automatically
-      mainContent.appendChild(makeSummaryTable(getSummary(fileGroups[thread])))
+      mainContent.appendChild(makeSummaryTable(getSummary(fileGroups[thread])[0]))
     }
     dmList.appendChild(sideButton);
   }

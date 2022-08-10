@@ -130,3 +130,13 @@ export const displayMessages = (messages: any[]) => {
   })
   return messagesElement;
 }
+
+export const displayWords = (topWords: any): HTMLElement => {
+  const wordWrapper = document.createElement("div");
+  topWords.forEach((word: string) => {
+    const p = document.createElement("p");
+    p.textContent = word;
+    wordWrapper.appendChild(p);
+  })
+  return wordWrapper;
+}

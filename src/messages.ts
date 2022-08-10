@@ -9,7 +9,6 @@ const getRandomInt = (max: number): number => {
 // Returns array of random messages from thread
 export const getRandomMessages = (thread: any): any[] => {
   const threadNum = getRandomInt(thread.length);
-  const threadlength = thread[threadNum].messages.length
   const index = getRandomInt(thread[threadNum].messages.length);
   return thread[threadNum].messages.slice(index, index+3);
 }

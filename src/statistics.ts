@@ -1,11 +1,14 @@
+import { commonWordsSet } from './words';
+
 export let participantList: any = [];
 
 /**
- * Get summary statistics
- * @returns participantList
+ * Get summary statistics and word frequency
+ * @returns [participantList, topWords]
  */
 export const getSummary = (thread: any) => {
   const participants: any = {};
+  const words: any = {};
   
   thread.forEach((content: any) => {
     const messages = content.messages;
@@ -15,9 +18,17 @@ export const getSummary = (thread: any) => {
       if (message["sender_name"] in participants) {
         const sender = participants[message["sender_name"]];
         if (!("content" in message) || ("content" in message && message["content"] !== "Liked a message")) {sender["Messages"]++};
-        if ("content" in message && message["content"] !== "Liked a message") {
+        if ("content" in message) {
           sender["Texts"] += 1,
           sender["Words"] += message["content"].split(" ").length;
+          message["content"].split(" ").forEach((word: any) => {
+            word = word.replace(/[^0-9a-z]/gi, '').toLowerCase();
+            if (commonWordsSet.has(word)) {
+            } else {
+              if (word in words) { words[word]++ }
+              else {words[word] = 1};
+            }
+          })
         } 
         if (message["type"] === "Share" && !("content" in message)) {sender["Shared"]++;}
         if ("photos" in message) {sender["Photos"] += message["photos"].length;}
@@ -29,15 +40,18 @@ export const getSummary = (thread: any) => {
         const sender = participants[message["sender_name"]];
   
         sender["Name"] = message["sender_name"];
-        
-        ("content" in message && message["content"] == "Liked a message") ? (
-          sender["Messages"] = 0
-        ) : (
-          sender["Messages"] = 1
-        );
-        ("content" in message && message["content"] !== "Liked a message") ? (
+        sender["Messages"] = 1;
+        "content" in message ? (
           sender["Texts"] = 1,
-          sender["Words"] = message["content"].split(" ").length
+          sender["Words"] = message["content"].split(" ").length,
+          message["content"].split(" ").forEach((word: any) => {
+            word = word.replace(/[^0-9a-z]/gi, '').toLowerCase();
+            if (commonWordsSet.has(word)) {
+            } else {
+              if (word in words) { words[word]++ }
+              else {words[word] = 1};
+            }
+          })
         ) : (
           sender["Texts"] = 0,
           sender["Words"] = 0
@@ -100,5 +114,12 @@ export const getSummary = (thread: any) => {
   for (const name in participants) {
     participantList.push(participants[name]);
   }
-  return participantList;
+
+  // Sort words object and return the highest few (there's probably a better way to do this?)
+  
+  const topWords = Object.keys(words).sort((a,b) => {
+    return words[b] - words[a];
+  })
+
+  return [participantList, topWords.slice(0, 50)];
 }
