@@ -11,6 +11,8 @@ p {
 
 #dm-list {
   grid-area: dm-list;
+  display: flex;
+  flex-direction: column;
 }
 
 #main {
