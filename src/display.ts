@@ -70,8 +70,9 @@ export const makeSummaryTable = (participantList: any[], percent=false) => {
 export const getSummaryPercentages = () => {
   const total: any = {};
 
+  const participantListPercents = structuredClone(participantList);
   // Get total count of all properties
-  participantList.forEach((participant: any) => {
+  participantListPercents.forEach((participant: any) => {
     for (const key in participant) {
       if (key !== "Name") {
         key in total ? (
@@ -83,7 +84,7 @@ export const getSummaryPercentages = () => {
     }
   })
   // Divide everyone's stats by corresponding total to get percentage
-  participantList.forEach((person: any) => {
+  participantListPercents.forEach((person: any) => {
     for (const key in person) {
       if (key !== "Name") {
         if (total[key] !== 0) {
@@ -92,6 +93,14 @@ export const getSummaryPercentages = () => {
       }
     }
   })
+  return participantListPercents;
+}
+
+/**
+ * Gets raw counts of current chat
+ * @returns participantList
+ */
+export const getSummaryAbsolutes = () => {
   return participantList;
 }
 

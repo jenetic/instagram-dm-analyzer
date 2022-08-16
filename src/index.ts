@@ -4,6 +4,7 @@ import {
 import {
   makeSummaryTable, 
   getSummaryPercentages,
+  getSummaryAbsolutes,
   displayMessages,
   decodeUtf8,
   displayWords
@@ -65,19 +66,32 @@ const displayResults = (fileGroups: any) => {
       
       const chats = fileGroups[thread];
       // Sub buttons
-      const summaryBtn = document.createElement("button");
-      summaryBtn.textContent = "Summary";
-      summaryBtn.onclick = () => {
-        mainContent.innerHTML = "";
-        mainContent.appendChild(makeSummaryTable(getSummary(chats)[0]));
-      }
-
       const percentageBtn = document.createElement("button");
       percentageBtn.textContent = "Percentage";
       percentageBtn.onclick = () => {
         mainContent.innerHTML = "";
+        mainContent.appendChild(absBtn);
+        mainContent.appendChild(percentageBtn);
         mainContent.appendChild(makeSummaryTable(getSummaryPercentages(), true));
       };
+
+      const absBtn = document.createElement("button");
+      absBtn.textContent = "Raw Numbers";
+      absBtn.onclick = () => {
+        mainContent.innerHTML = "";
+        mainContent.appendChild(absBtn);
+        mainContent.appendChild(percentageBtn);
+        mainContent.appendChild(makeSummaryTable(getSummaryAbsolutes()));
+      };
+
+      const summaryBtn = document.createElement("button");
+      summaryBtn.textContent = "Summary";
+      summaryBtn.onclick = () => {
+        mainContent.innerHTML = "";
+        mainContent.appendChild(absBtn);
+        mainContent.appendChild(percentageBtn);
+        mainContent.appendChild(makeSummaryTable(getSummary(chats)[0]));
+      }
 
       const latestBtn = document.createElement("button");
       latestBtn.textContent = "Latest Messages";
@@ -111,7 +125,6 @@ const displayResults = (fileGroups: any) => {
       mainContent.innerHTML = "";
 
       buttonHeader.appendChild(summaryBtn);
-      buttonHeader.appendChild(percentageBtn);
       buttonHeader.appendChild(latestBtn); 
       buttonHeader.appendChild(firstBtn); 
       buttonHeader.appendChild(randomBtn); 
@@ -120,6 +133,8 @@ const displayResults = (fileGroups: any) => {
       document.getElementById("chat-name").textContent = decodeUtf8(fileGroups[thread][0].title);
 
       // Display summary automatically
+      mainContent.appendChild(absBtn);
+      mainContent.appendChild(percentageBtn);
       mainContent.appendChild(makeSummaryTable(getSummary(fileGroups[thread])[0]))
     }
     dmList.appendChild(sideButton);
