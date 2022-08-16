@@ -1,3 +1,6 @@
+import {
+  filterSearchResults,
+} from './search';
 import { 
   getSummary,
 } from './statistics';
@@ -152,3 +155,6 @@ document.getElementById('submit-button').addEventListener("click", function(even
   document.getElementById("no-files-message").style.display = "none";
 }, false);
 
+// Search bar functionality
+const searchBar = <HTMLInputElement>document.getElementById("search-threads-input");
+searchBar.onkeyup = () => filterSearchResults();
