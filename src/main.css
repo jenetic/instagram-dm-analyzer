@@ -9,6 +9,10 @@ p {
   grid-template-areas: "dm-list main";
 }
 
+#search-threads-input {
+  display: none;
+}
+
 #dm-list {
   grid-area: dm-list;
   display: flex;

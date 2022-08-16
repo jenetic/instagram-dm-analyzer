@@ -137,6 +137,7 @@ const displayResults = (fileGroups: any) => {
       mainContent.appendChild(percentageBtn);
       mainContent.appendChild(makeSummaryTable(getSummary(fileGroups[thread])[0]))
     }
+    document.getElementById("search-threads-input").style.display = "block";
     dmList.appendChild(sideButton);
   }
 }
