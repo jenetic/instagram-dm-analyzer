@@ -1,9 +1,5 @@
-import {
-  filterSearchResults,
-} from './search';
-import { 
-  getSummary,
-} from './statistics';
+import { filterSearchResults } from './search';
+import { getSummary } from './statistics';
 import {
   makeSummaryTable, 
   getSummaryPercentages,
@@ -62,13 +58,13 @@ const displayResults = (fileGroups: any) => {
     const buttonHeader = document.getElementById("main-header");
     const mainContent = document.getElementById("main-content");
 
-    const sideButton = document.createElement("button");
-    sideButton.setAttribute("class", "side-button");
-    sideButton.textContent = decodeUtf8(fileGroups[thread][0].title); // get value of key
-    sideButton.onclick = () => {
-      
+    const chatButton = document.createElement("button");
+    chatButton.setAttribute("class", "chat-button");
+    chatButton.textContent = decodeUtf8(fileGroups[thread][0].title); // get value of key
+    chatButton.onclick = () => {
       const chats = fileGroups[thread];
       // Sub buttons
+      
       const percentageBtn = document.createElement("button");
       percentageBtn.textContent = "Percentage";
       percentageBtn.onclick = () => {
@@ -141,7 +137,7 @@ const displayResults = (fileGroups: any) => {
       mainContent.appendChild(makeSummaryTable(getSummary(fileGroups[thread])[0]))
     }
     document.getElementById("search-threads-input").style.display = "block";
-    dmList.appendChild(sideButton);
+    dmList.appendChild(chatButton);
   }
 }
 
@@ -151,8 +147,6 @@ document.getElementById('submit-button').addEventListener("click", function(even
   const files: File[] = processFileInput((<HTMLInputElement>document.getElementById("file-input")).files);
   
   groupFiles(files, displayResults);
-
-  document.getElementById("no-files-message").style.display = "none";
 }, false);
 
 // Search bar functionality
