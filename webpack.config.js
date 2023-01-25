@@ -9,7 +9,7 @@ module.exports = {
     main: path.resolve(__dirname, './src/index.ts')
   },
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, 'public'),
     filename: '[name].[contenthash].js',
     assetModuleFilename: '[name][ext]',
     clean: true,
@@ -46,7 +46,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Jenny Lam',
+      title: 'Instagram DM Metrics',
       filename: 'index.html',
       template: path.resolve(__dirname, './src/index.html'),
     }),
