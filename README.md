@@ -1,6 +1,7 @@
-# Instagram DM Statistics
+# Instagram DM Metrics
+old and unfinished 😔
 
-## Developement
+## Development
 ```shell
 # Install dependencies
 $ npm install
