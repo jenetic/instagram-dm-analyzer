@@ -27,6 +27,15 @@ td, th {
   padding: 0.2rem 0.4rem;
 }
 
+a {
+  text-decoration: none;
+  color: var(--color1);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 th:hover {
   color: var(--color1);
   text-decoration: underline;
