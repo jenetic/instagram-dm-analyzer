@@ -1,5 +1,5 @@
 import { filterSearchResults } from './search';
-import { getSummary } from './statistics';
+import { getSummary } from './metrics';
 import {
   makeSummaryTable, 
   getSummaryPercentages,

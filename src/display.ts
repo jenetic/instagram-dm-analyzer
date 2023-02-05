@@ -1,4 +1,4 @@
-import { participantList } from "./statistics";
+import { participantList } from "./metrics";
 
 export const decodeUtf8 = (s: string): string => {
   return decodeURIComponent(escape(s));
@@ -107,8 +107,7 @@ export const getSummaryAbsolutes = () => {
 // DISPLAYING MESSAGES
 const timestampToDate = (timestamp: number) => {
   const date = new Date(timestamp);
-  const month = date.getMonth() + 1;
-  return month + "/" + date.getDate() + "/" + date.getFullYear();
+  return date.toLocaleString();
 }
 
 export const displayMessages = (messages: any[]) => {
@@ -120,7 +119,7 @@ export const displayMessages = (messages: any[]) => {
     const textElement = document.createElement('p');
     textElement.className = "message-text";
 
-    headerElement.textContent = decodeUtf8(message.sender_name) + " at " + timestampToDate(message.timestamp_ms);
+    headerElement.textContent = decodeUtf8(message.sender_name) + " on " + timestampToDate(message.timestamp_ms);
     if ("content" in message) { textElement.textContent = decodeUtf8(message.content); }
     else {
       textElement.className = "message-media"

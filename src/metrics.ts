@@ -1,6 +1,17 @@
 import { commonWordsSet } from './words';
 
-export let participantList: any = [];
+interface Participant {
+  "Average Words Per Text": number;
+  Messages: number;
+  Name: string;
+  Photos: number;
+  Shared: number;
+  Texts: number;
+  Videos: number;
+  Words: number;
+}
+
+export let participantList: Participant[] = [];
 
 /**
  * Get summary statistics and word frequency
@@ -33,9 +44,9 @@ export const getSummary = (thread: any) => {
         if (message["type"] === "Share" && !("content" in message)) {sender["Shared"]++;}
         if ("photos" in message) {sender["Photos"] += message["photos"].length;}
         if ("videos" in message) {sender["Photos"] += message["videos"].length;}
-        if (message["is_unsent"]) {sender["Unsent"]++;}
   
       } else {
+        // If we encountered a message by a person whose name is not yet in participants object
         participants[message["sender_name"]] = {};
         const sender = participants[message["sender_name"]];
   
@@ -71,11 +82,6 @@ export const getSummary = (thread: any) => {
         ) : (
           sender["Videos"] = 0
         );
-        message["is_unsent"] ? (
-          sender["Unsent"] = 1
-        ) : (
-          sender["Unsent"] = 0
-        );
       }
     })
 
@@ -90,8 +96,7 @@ export const getSummary = (thread: any) => {
           "Words": 0,
           "Shared": 0,
           "Photos": 0,
-          "Videos": 0,
-          "Unsent": 0,
+          "Videos": 0
         };
       }
     })
@@ -100,8 +105,6 @@ export const getSummary = (thread: any) => {
   // Average words per message & Other
   for (const name in participants) {
     const person = participants[name];
-    // Other
-    person["Other"] = person["Messages"] - person["Texts"] - person["Shared"] - person["Photos"] - person["Videos"];
     // Average words per text
     if (person["Texts"] === 0) {
       person["Average Words Per Text"] = 0;
