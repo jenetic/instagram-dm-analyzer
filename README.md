@@ -5,7 +5,7 @@ and some other things like random messages about your Instagram direct messages.
 
 Check it out [here](https://jenetic.github.io/instagram-dms/).
 
-![Screenshot of summary screen](screenshot.png)
+<img src="screenshot.png" width="70%"> 
 
 ## Development
 ```shell
