@@ -1,8 +1,6 @@
 # Instagram DM Analyzer
 This webapp generates metrics (and some other things like random messages) based on your Instagram direct messages.
 
-and some other things like random messages about your Instagram direct messages.
-
 Check it out [here](https://jenetic.github.io/instagram-dm-analyzer/)!
 
 <img src="screenshot.png" width="70%"> 
